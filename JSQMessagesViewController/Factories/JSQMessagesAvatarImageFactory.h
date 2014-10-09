@@ -96,4 +96,7 @@
                                                    font:(UIFont *)font
                                                diameter:(NSUInteger)diameter;
 
++ (JSQMessagesAvatarImage *)avatarImageWithImage:(UIImage *)image diameter:(NSUInteger)diameter hideGridIcon:(BOOL)hideGridIcon;
+
+
 @end

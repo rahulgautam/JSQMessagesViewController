@@ -129,6 +129,9 @@
  */
 @property (weak, nonatomic, readonly) UIImageView *avatarImageView;
 
+@property (weak, nonatomic) IBOutlet UIImageView *gridIconImageView;
+
+
 /**
  *  Returns the avatar container view of the cell. This view is the superview of 
  *  the cell's avatarImageView.
@@ -154,6 +157,12 @@
  *  This gesture handles the tap event for the avatarImageView and notifies the cell's delegate.
  */
 @property (weak, nonatomic, readonly) UITapGestureRecognizer *tapGestureRecognizer;
+
+
+//DOC - added
+@property (strong, nonatomic) IBOutlet UIView *avatarGridView;
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *activity;
+
 
 #pragma mark - Class methods
 

@@ -307,6 +307,7 @@ static void * kJSQMessagesKeyValueObservingContext = &kJSQMessagesKeyValueObserv
     textView.text = nil;
     [textView.undoManager removeAllActions];
     
+    
     [self.inputToolbar toggleSendButtonEnabled];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:UITextViewTextDidChangeNotification object:textView];
@@ -401,8 +402,29 @@ static void * kJSQMessagesKeyValueObservingContext = &kJSQMessagesKeyValueObserv
     NSString *messageSenderId = [messageItem senderId];
     NSParameterAssert(messageSenderId != nil);
     
+    NSString *messageSenderDisplayName = [messageItem senderDisplayName];
+    
+    
+    /*
+    if([messageItem respondsToSelector:@selector(senderDisplayName)]){
+        NSString *messageSenderDisplayName = [messageItem senderDisplayName];
+        NSParameterAssert(messageSenderDisplayName != nil);
+    }
+*/
+    
+    NSString *messageText = nil;
+    
+    //id<JSQMessageMediaData> messageMedia = nil;
+    
+    messageText = [messageItem text];
+    
     BOOL isOutgoingMessage = [messageSenderId isEqualToString:self.senderId];
-    BOOL isMediaMessage = [messageItem isMediaMessage];
+    
+    BOOL isMediaMessage = NO;
+    
+    if ([messageItem messageType] == MessageTypeImage || [messageItem messageType] == MessageTypeLocation) {
+        isMediaMessage = YES;
+    }
     
     NSString *cellIdentifier = nil;
     if (isMediaMessage) {
@@ -417,7 +439,7 @@ static void * kJSQMessagesKeyValueObservingContext = &kJSQMessagesKeyValueObserv
     
     if (!isMediaMessage) {
         cell.textView.text = [messageItem text];
-        NSParameterAssert(cell.textView.text != nil);
+       // NSParameterAssert(cell.textView.text != nil);
         
         id<JSQMessageBubbleImageDataSource> bubbleImageDataSource = [collectionView.dataSource collectionView:collectionView messageBubbleImageDataForItemAtIndexPath:indexPath];
         if (bubbleImageDataSource != nil) {
@@ -426,8 +448,8 @@ static void * kJSQMessagesKeyValueObservingContext = &kJSQMessagesKeyValueObserv
         }
     }
     else {
-        id<JSQMessageMediaData> messageMedia = [messageItem media];
-        cell.mediaView = [messageMedia mediaView] ?: [messageMedia mediaPlaceholderView];
+//        id<JSQMessageMediaData> messageMedia = [messageItem media];
+        cell.mediaView = [messageItem mediaView] ?: [messageItem mediaPlaceholderView];
         NSParameterAssert(cell.mediaView != nil);
     }
     
@@ -445,16 +467,25 @@ static void * kJSQMessagesKeyValueObservingContext = &kJSQMessagesKeyValueObserv
         if (avatarImageDataSource != nil) {
             cell.avatarImageView.image = [avatarImageDataSource avatarImage] ?: [avatarImageDataSource avatarPlaceholderImage];
             cell.avatarImageView.highlightedImage = [avatarImageDataSource avatarHighlightedImage];
+            cell.gridIconImageView.hidden = avatarImageDataSource.hideGridIcon;
+
         }
+        else
+        {
+            cell.gridIconImageView.hidden = YES;
+            cell.avatarImageView.image = nil;
+            cell.avatarImageView.highlightedImage = nil;
+        }
+
     }
     
     cell.cellTopLabel.attributedText = [collectionView.dataSource collectionView:collectionView attributedTextForCellTopLabelAtIndexPath:indexPath];
     cell.messageBubbleTopLabel.attributedText = [collectionView.dataSource collectionView:collectionView attributedTextForMessageBubbleTopLabelAtIndexPath:indexPath];
     cell.cellBottomLabel.attributedText = [collectionView.dataSource collectionView:collectionView attributedTextForCellBottomLabelAtIndexPath:indexPath];
     
-    cell.backgroundColor = [UIColor whiteColor];
+    cell.backgroundColor = [UIColor clearColor];
     
-    CGFloat bubbleTopLabelInset = (avatarImageDataSource != nil) ? 60.0f : 15.0f;
+    CGFloat bubbleTopLabelInset = (avatarImageDataSource != nil) ? 35.0f : 35.0f;
     
     if (isOutgoingMessage) {
         cell.messageBubbleTopLabel.textInsets = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, bubbleTopLabelInset);
@@ -508,7 +539,7 @@ static void * kJSQMessagesKeyValueObservingContext = &kJSQMessagesKeyValueObserv
 {
     //  disable menu for media messages
     id<JSQMessageData> messageItem = [collectionView.dataSource collectionView:collectionView messageDataForItemAtIndexPath:indexPath];
-    if ([messageItem isMediaMessage]) {
+    if ([messageItem respondsToSelector:@selector(media)]) {
         return NO;
     }
     

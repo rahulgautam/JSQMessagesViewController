@@ -178,4 +178,17 @@
     return newImage;
 }
 
++ (JSQMessagesAvatarImage *)avatarImageWithImage:(UIImage *)image diameter:(NSUInteger)diameter hideGridIcon:(BOOL)hideGridIcon
+{
+    UIImage *avatar = [JSQMessagesAvatarImageFactory circularAvatarImage:image withDiameter:diameter];
+    UIImage *highlightedAvatar = [JSQMessagesAvatarImageFactory circularAvatarHighlightedImage:image withDiameter:diameter];
+    
+    return [[JSQMessagesAvatarImage alloc] initWithAvatarImage:avatar
+                                              highlightedImage:highlightedAvatar
+                                              placeholderImage:avatar
+                                                  hideGridIcon:hideGridIcon];
+}
+
+
+
 @end

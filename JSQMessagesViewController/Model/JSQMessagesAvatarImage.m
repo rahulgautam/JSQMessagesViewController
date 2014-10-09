@@ -82,4 +82,23 @@
                                                  placeholderImage:[UIImage imageWithCGImage:self.avatarPlaceholderImage.CGImage]];
 }
 
+
+- (instancetype)initWithAvatarImage:(UIImage *)avatarImage
+                   highlightedImage:(UIImage *)highlightedImage
+                   placeholderImage:(UIImage *)placeholderImage
+                       hideGridIcon:(BOOL)hideGridIcon
+{
+    NSParameterAssert(placeholderImage != nil);
+    
+    self = [super init];
+    if (self) {
+        _avatarImage = avatarImage;
+        _avatarHighlightedImage = highlightedImage;
+        _avatarPlaceholderImage = placeholderImage;
+        _hideGridIcon = hideGridIcon;
+    }
+    return self;
+}
+
+
 @end

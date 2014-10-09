@@ -61,6 +61,14 @@
  */
 - (NSDate *)date;
 
+
+/**
+ *  @return The body text of the message.
+ *
+ *  @warning You must not return `nil` from this method.
+ */
+- (NSString *)text;
+
 /**
  *  This method is used to determine if the message data item contains text or media.
  *  If this method returns `YES`, an instance of `JSQMessagesViewController` will ignore 
@@ -75,20 +83,43 @@
  */
 - (BOOL)isMediaMessage;
 
-@optional
 
-/**
- *  @return The body text of the message.
- *
- *  @warning You must not return `nil` from this method.
- */
-- (NSString *)text;
+
+
+
+
+
+//DOC - added
+
+- (id)media;
+
+- (MessageType)messageType;
+
+- (CGSize)mediaViewDisplaySize;
+
+- (UIView *)mediaPlaceholderView;
+
+- (UIView *)mediaView;
 
 /**
  *  @return The media item of the message.
  *  
  *  @warning You must not return `nil` from this method.
  */
-- (id<JSQMessageMediaData>)media;
+
+
+@optional
+- (CGSize)originalMediaSize;
+
+- (BOOL)isUploadingMessage;
+
+-(NSString *)cacheKey;
+
+-(LYRMessage *)layerMessage;
+
+-(NSString *)urlToDownloadAttachment;
+
+
+
 
 @end

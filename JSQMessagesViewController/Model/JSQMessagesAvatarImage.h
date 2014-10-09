@@ -45,6 +45,9 @@
  */
 @property (nonatomic, strong, readonly) UIImage *avatarPlaceholderImage;
 
+@property (assign, readonly) BOOL hideGridIcon;
+
+
 /**
  *  Initializes and returns an avatar image object having the specified image.
  *
@@ -77,5 +80,12 @@
 - (instancetype)initWithAvatarImage:(UIImage *)avatarImage
                    highlightedImage:(UIImage *)highlightedImage
                    placeholderImage:(UIImage *)placeholderImage;
+
+
+- (instancetype)initWithAvatarImage:(UIImage *)avatarImage
+                   highlightedImage:(UIImage *)highlightedImage
+                   placeholderImage:(UIImage *)placeholderImage
+                       hideGridIcon:(BOOL)hideGridIcon;
+
 
 @end

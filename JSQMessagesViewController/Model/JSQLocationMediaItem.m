@@ -78,7 +78,8 @@
     }
     
     MKMapSnapshotOptions *options = [[MKMapSnapshotOptions alloc] init];
-    options.region = MKCoordinateRegionMakeWithDistance(location.coordinate, 10, 10);
+    options.mapType = MKMapTypeStandard;
+    options.region = MKCoordinateRegionMakeWithDistance(location.coordinate, 700, 700);
     options.size = [self mediaViewDisplaySize];
     options.scale = [UIScreen mainScreen].scale;
     

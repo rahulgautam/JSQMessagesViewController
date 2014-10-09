@@ -60,4 +60,7 @@
  */
 - (UIImage *)avatarPlaceholderImage;
 
+- (BOOL)hideGridIcon;
+
+
 @end

@@ -54,16 +54,19 @@
 
 + (JSQMessagesBubbleImage *)messagesBubbleImageWithColor:(UIColor *)color flippedForIncoming:(BOOL)flippedForIncoming
 {
-    UIImage *bubble = [UIImage imageNamed:@"bubble_min"];
-    
-    UIImage *normalBubble = [bubble jsq_imageMaskedWithColor:color];
-    UIImage *highlightedBubble = [bubble jsq_imageMaskedWithColor:[color jsq_colorByDarkeningColorWithValue:0.12f]];
-    
-    if (flippedForIncoming) {
-        normalBubble = [JSQMessagesBubbleImageFactory jsq_horizontallyFlippedImageFromImage:normalBubble];
-        highlightedBubble = [JSQMessagesBubbleImageFactory jsq_horizontallyFlippedImageFromImage:highlightedBubble];
+    //Doc - bubble image changes and size calculations changes
+    UIImage *bubble;
+    if(flippedForIncoming)
+    {
+        bubble = [JSQMessagesBubbleImageFactory jsq_horizontallyFlippedImageFromImage:[UIImage imageNamed:@"rounded_cube_in"]];
+    }
+    else
+    {
+        bubble =  [UIImage imageNamed:@"rounded_cube_out"];
     }
     
+    UIImage *normalBubble =bubble;
+    UIImage *highlightedBubble = bubble;
     // make image stretchable from center point
     CGPoint center = CGPointMake(bubble.size.width / 2.0f, bubble.size.height / 2.0f);
     UIEdgeInsets capInsets = UIEdgeInsetsMake(center.y, center.x, center.y, center.x);
@@ -78,7 +81,7 @@
 {
     return [UIImage imageWithCGImage:image.CGImage
                                scale:image.scale
-                         orientation:UIImageOrientationUpMirrored];
+                         orientation:UIImageOrientationDownMirrored];
 }
 
 + (UIImage *)jsq_stretchableImageFromImage:(UIImage *)image withCapInsets:(UIEdgeInsets)capInsets

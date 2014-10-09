@@ -31,6 +31,7 @@
 #import "JSQMessagesCollectionViewLayoutAttributes.h"
 #import "JSQMessagesCollectionViewFlowLayoutInvalidationContext.h"
 
+
 const CGFloat kJSQMessagesCollectionViewCellLabelHeightDefault = 20.0f;
 const CGFloat kJSQMessagesCollectionViewAvatarSizeDefault = 30.0f;
 
@@ -74,7 +75,7 @@ const CGFloat kJSQMessagesCollectionViewAvatarSizeDefault = 30.0f;
     self.sectionInset = UIEdgeInsetsMake(10.0f, 4.0f, 10.0f, 4.0f);
     self.minimumLineSpacing = 4.0f;
     
-    _bubbleImageAssetWidth = [UIImage imageNamed:@"bubble_min"].size.width;
+   // _bubbleImageAssetWidth = [UIImage imageNamed:@"bubble_min"].size.width;
     
     _messageBubbleSizes = [NSMutableDictionary new];
     
@@ -402,9 +403,12 @@ const CGFloat kJSQMessagesCollectionViewAvatarSizeDefault = 30.0f;
     
     id<JSQMessageData> messageItem = [self.collectionView.dataSource collectionView:self.collectionView messageDataForItemAtIndexPath:indexPath];
     CGSize finalSize = CGSizeZero;
-    
-    if ([messageItem isMediaMessage]) {
-        finalSize = [[messageItem media] mediaViewDisplaySize];
+#warning Check Based on message type remove below lines
+    //if ([messageItem respondsToSelector:@selector(media)]) {
+    if([messageItem messageType] == MessageTypeImage || [messageItem messageType] == MessageTypeLocation) {
+        //finalSize = [[messageItem media] mediaViewDisplaySize];
+        finalSize = [messageItem mediaViewDisplaySize];
+        //NSLog(@"media final Size w:%f h:%f",finalSize.width,finalSize.height);
     }
     else {
         CGSize avatarSize = [self jsq_avatarSizeForIndexPath:indexPath];
@@ -431,15 +435,14 @@ const CGFloat kJSQMessagesCollectionViewAvatarSizeDefault = 30.0f;
         //  not sure why. magix. (shrug) if you know, submit a PR
         CGFloat verticalInsets = verticalContainerInsets + verticalFrameInsets + 2.0f;
         
-        CGFloat finalWidth = MAX(stringSize.width + horizontalInsetsTotal, self.bubbleImageAssetWidth);
+        CGFloat finalWidth = MAX(stringSize.width + horizontalInsetsTotal, [UIImage imageNamed:@"bubble_min"].size.width);
         
         finalSize = CGSizeMake(finalWidth, stringSize.height + verticalInsets);
     }
     
     [self.messageBubbleSizes setObject:[NSValue valueWithCGSize:finalSize] forKey:indexPath];
     
-    return finalSize;
-}
+    return finalSize;}
 
 - (void)jsq_configureMessageCellLayoutAttributes:(JSQMessagesCollectionViewLayoutAttributes *)layoutAttributes
 {

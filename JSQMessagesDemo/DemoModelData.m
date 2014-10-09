@@ -158,7 +158,7 @@
 
 - (void)addPhotoMediaMessage
 {
-    JSQPhotoMediaItem *photoItem = [[JSQPhotoMediaItem alloc] initWithImage:[UIImage imageNamed:@"goldengate"]];
+    JSQPhotoMediaItem *photoItem = [[JSQPhotoMediaItem alloc] initWithImage:[UIImage imageNamed:@"test"]];
     JSQMediaMessage *photoMessage = [JSQMediaMessage messageWithSenderId:kJSQDemoAvatarIdSquires
                                                              displayName:kJSQDemoAvatarDisplayNameSquires
                                                                    media:photoItem];
@@ -166,10 +166,11 @@
 }
 
 - (void)addLocationMediaMessageCompletion:(JSQLocationMediaItemCompletionBlock)completion
-{
-    CLLocation *ferryBuildingInSF = [[CLLocation alloc] initWithLatitude:37.795313 longitude:-122.393757];
+{//75.828351 lat:26.791645
+    CLLocation *ferryBuildingInSF = [[CLLocation alloc] initWithLatitude:26.791645 longitude:75.828351];
     
     JSQLocationMediaItem *locationItem = [[JSQLocationMediaItem alloc] init];
+   
     [locationItem setLocation:ferryBuildingInSF withCompletionHandler:completion];
     
     JSQMediaMessage *locationMessage = [JSQMediaMessage messageWithSenderId:kJSQDemoAvatarIdSquires
