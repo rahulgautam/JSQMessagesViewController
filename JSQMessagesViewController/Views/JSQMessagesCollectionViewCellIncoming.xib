@@ -45,6 +45,11 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="DWK-ZY-u3w">
+                                <rect key="frame" x="112" y="37" width="20" height="20"/>
+                                <color key="tintColor" red="0.0" green="0.33725490200000002" blue="0.55294117649999996" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="color" red="0.0" green="0.33725490200000002" blue="0.55294117649999996" alpha="1" colorSpace="calibratedRGB"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -111,6 +116,7 @@
             </constraints>
             <size key="customSize" width="317" height="245"/>
             <connections>
+                <outlet property="activity" destination="DWK-ZY-u3w" id="FZj-kS-6Ig"/>
                 <outlet property="avatarContainerView" destination="Da1-09-wR4" id="tpM-P4-qUR"/>
                 <outlet property="avatarContainerViewHeightConstraint" destination="tZk-AK-JFa" id="tPu-mC-ITh"/>
                 <outlet property="avatarContainerViewWidthConstraint" destination="YwX-fW-Me6" id="5PN-NL-hEP"/>
