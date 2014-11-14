@@ -8,7 +8,7 @@
 //  http://opensource.org/licenses/MIT
 //
 
-@import XCTest;
+#import <XCTest/XCTest.h>
 
 #import "JSQMessagesAvatarImageFactory.h"
 
@@ -48,7 +48,6 @@
     avatar.avatarHighlightedImage = [JSQMessagesAvatarImageFactory circularAvatarHighlightedImage:image withDiameter:diameter];
     XCTAssertTrue(CGSizeEqualToSize(avatar.avatarHighlightedImage.size, CGSizeMake(diameter, diameter)), @"Avatar size should be equal to diameter");
     XCTAssertEqual(avatar.avatarHighlightedImage.scale, [UIScreen mainScreen].scale, @"Avatar scale should be equal to screen scale");
-    
 }
 
 - (void)testAvatarInitialsImage

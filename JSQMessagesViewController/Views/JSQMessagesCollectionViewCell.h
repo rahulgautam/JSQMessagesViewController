@@ -16,9 +16,10 @@
 //  Released under an MIT license: http://opensource.org/licenses/MIT
 //
 
-@import UIKit;
+#import <UIKit/UIKit.h>
 
 #import "JSQMessagesLabel.h"
+#import "JSQMessagesCellTextView.h"
 
 @class JSQMessagesCollectionViewCell;
 
@@ -102,7 +103,7 @@
  *
  *  @warning If mediaView returns a non-nil view, then this value will be `nil`.
  */
-@property (weak, nonatomic, readonly) UITextView *textView;
+@property (weak, nonatomic, readonly) JSQMessagesCellTextView *textView;
 
 /**
  *  Returns the bubble image view of the cell that is responsible for displaying message bubble images. 
@@ -161,7 +162,7 @@
 
 //DOC - added
 @property (strong, nonatomic) IBOutlet UIView *avatarGridView;
-@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *activity;
+@property (strong, nonatomic) UIActivityIndicatorView *activity;
 
 
 #pragma mark - Class methods

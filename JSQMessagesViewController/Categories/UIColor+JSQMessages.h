@@ -16,7 +16,7 @@
 //  Released under an MIT license: http://opensource.org/licenses/MIT
 //
 
-@import UIKit;
+#import <UIKit/UIKit.h>
 
 @interface UIColor (JSQMessages)
 
@@ -31,6 +31,11 @@
  *  @return A color object containing HSB values similar to the iOS 7 messages app blue bubble color.
  */
 + (UIColor *)jsq_messageBubbleBlueColor;
+
+/**
+ *  @return A color object containing HSB values similar to the iOS 7 red color.
+ */
++ (UIColor *)jsq_messageBubbleRedColor;
 
 /**
  *  @return A color object containing HSB values similar to the iOS 7 messages app light gray bubble color.

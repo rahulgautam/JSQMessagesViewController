@@ -16,10 +16,10 @@
 //  Released under an MIT license: http://opensource.org/licenses/MIT
 //
 
-@import Foundation;
-@import UIKit;
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
-@class JSQMessagesComposerTextView;
+#import "JSQMessagesComposerTextView.h"
 
 /**
  *  A constant value representing the default spacing to use for the left and right edges 

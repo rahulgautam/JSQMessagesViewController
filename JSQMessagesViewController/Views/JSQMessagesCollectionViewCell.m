@@ -34,10 +34,12 @@
 
 @property (weak, nonatomic) IBOutlet UIView *messageBubbleContainerView;
 @property (weak, nonatomic) IBOutlet UIImageView *messageBubbleImageView;
-@property (weak, nonatomic) IBOutlet UITextView *textView;
+@property (weak, nonatomic) IBOutlet JSQMessagesCellTextView *textView;
 
 @property (weak, nonatomic) IBOutlet UIImageView *avatarImageView;
 @property (weak, nonatomic) IBOutlet UIView *avatarContainerView;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *messageBubbleContainerWidthConstraint;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *textViewTopVerticalSpaceConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *textViewBottomVerticalSpaceConstraint;
@@ -50,8 +52,6 @@
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *avatarContainerViewWidthConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *avatarContainerViewHeightConstraint;
-
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *messageBubbleLeftRightMarginConstraint;
 
 @property (assign, nonatomic) UIEdgeInsets textViewFrameInsets;
 
@@ -93,6 +93,7 @@
     [super awakeFromNib];
     
     [self setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
     self.backgroundColor = [UIColor whiteColor];
     
     self.cellTopLabelHeightConstraint.constant = 0.0f;
@@ -110,23 +111,6 @@
     
     self.cellBottomLabel.font = [UIFont systemFontOfSize:11.0f];
     self.cellBottomLabel.textColor = [UIColor lightGrayColor];
-    
-    self.textView.textColor = [UIColor whiteColor];
-    self.textView.editable = NO;
-    self.textView.selectable = YES;
-    self.textView.userInteractionEnabled = YES;
-    self.textView.dataDetectorTypes = UIDataDetectorTypeNone;
-    self.textView.showsHorizontalScrollIndicator = NO;
-    self.textView.showsVerticalScrollIndicator = NO;
-    self.textView.scrollEnabled = NO;
-    self.textView.backgroundColor = [UIColor clearColor];
-    self.textView.contentInset = UIEdgeInsetsZero;
-    self.textView.scrollIndicatorInsets = UIEdgeInsetsZero;
-    self.textView.contentOffset = CGPointZero;
-    self.textView.textContainerInset = UIEdgeInsetsZero;
-    self.textView.textContainer.lineFragmentPadding = 0;
-    self.textView.linkTextAttributes = @{ NSForegroundColorAttributeName : [UIColor whiteColor],
-                                          NSUnderlineStyleAttributeName : @(NSUnderlineStyleSingle | NSUnderlinePatternSolid) };
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jsq_handleTapGesture:)];
     [self addGestureRecognizer:tap];
@@ -156,7 +140,7 @@
 - (void)prepareForReuse
 {
     [super prepareForReuse];
-
+    
     self.cellTopLabel.text = nil;
     self.messageBubbleTopLabel.text = nil;
     self.cellBottomLabel.text = nil;
@@ -164,6 +148,9 @@
     self.textView.dataDetectorTypes = UIDataDetectorTypeNone;
     self.textView.text = nil;
     self.textView.attributedText = nil;
+    
+    self.avatarImageView.image = nil;
+    self.avatarImageView.highlightedImage = nil;
 }
 
 - (void)applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes
@@ -181,9 +168,9 @@
     }
     
     self.textViewFrameInsets = customAttributes.textViewFrameInsets;
-
-    [self jsq_updateConstraint:self.messageBubbleLeftRightMarginConstraint
-                  withConstant:customAttributes.messageBubbleLeftRightMargin];
+    
+    [self jsq_updateConstraint:self.messageBubbleContainerWidthConstraint
+                  withConstant:customAttributes.messageBubbleContainerViewWidth];
     
     [self jsq_updateConstraint:self.cellTopLabelHeightConstraint
                   withConstant:customAttributes.cellTopLabelHeight];
@@ -273,7 +260,7 @@
     if ([_mediaView isEqual:mediaView]) {
         return;
     }
-
+    
     [self.messageBubbleImageView removeFromSuperview];
     [self.textView removeFromSuperview];
     
@@ -282,17 +269,36 @@
     
     [self.messageBubbleContainerView addSubview:mediaView];
     [self.messageBubbleContainerView jsq_pinAllEdgesOfSubview:mediaView];
-    [self setNeedsUpdateConstraints];
     _mediaView = mediaView;
     
     //  because of cell re-use (and caching media views, if using built-in library media item)
     //  we may have dequeued a cell with a media view and add this one on top
     //  thus, remove any additional subviews hidden behind the new media view
-    for (NSUInteger i = 0; i < self.messageBubbleContainerView.subviews.count; i++) {
-        if (self.messageBubbleContainerView.subviews[i] != _mediaView) {
-            [self.messageBubbleContainerView.subviews[i] removeFromSuperview];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        for (NSUInteger i = 0; i < self.messageBubbleContainerView.subviews.count; i++) {
+            if (self.messageBubbleContainerView.subviews[i] != _mediaView) {
+                [self.messageBubbleContainerView.subviews[i] removeFromSuperview];
+            }
         }
-    }
+    });
+    
+    
+    self.activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [self.activity setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.activity setColor:[UIColor colorWithRed:2/255.0f green:112/255.0f blue:186/255.0f alpha:1.0]];
+    
+    
+    [self.mediaView addSubview:self.activity];
+    [self.mediaView bringSubviewToFront:self.activity];
+    NSLayoutConstraint *xCenterConstraint = [NSLayoutConstraint constraintWithItem:self.activity attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.mediaView attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0];
+    [self.mediaView addConstraint:xCenterConstraint];
+    
+    NSLayoutConstraint *yCenterConstraint = [NSLayoutConstraint constraintWithItem:self.activity attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.mediaView attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0];
+    [self.mediaView addConstraint:yCenterConstraint];
+    
+    
+    [self.activity setCenter:[self.activity.superview center]];
+    
 }
 
 #pragma mark - Getters
@@ -320,7 +326,6 @@
     }
     
     constraint.constant = constant;
-    [self setNeedsUpdateConstraints];
 }
 
 #pragma mark - Gesture recognizers

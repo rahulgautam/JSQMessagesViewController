@@ -21,7 +21,7 @@
 //  https://github.com/AshFurrow/ASHSpringyCollectionView
 //
 
-@import UIKit;
+#import <UIKit/UIKit.h>
 
 @class JSQMessagesCollectionView;
 
@@ -168,13 +168,30 @@ FOUNDATION_EXPORT const CGFloat kJSQMessagesCollectionViewAvatarSizeDefault;
 @property (assign, nonatomic) CGSize outgoingAvatarViewSize;
 
 /**
- *  Computes and returns the size of the `messageBubbleImageView` property of a `JSQMessagesCollectionViewCell` 
- *  to display its entire message contents. Note, this is *not* the entire cell, but only its message bubble.
+ *  The maximum number of items that the layout should keep in its cache of layout information.
+ *
+ *  @discussion The default value is `200`. A limit of `0` means no limit. This is not a strict limit.
+ */
+@property (assign, nonatomic) NSUInteger cacheLimit;
+
+/**
+ *  Computes and returns the size of the `messageBubbleImageView` property of a `JSQMessagesCollectionViewCell`
+ *  at the specified indexPath. The returned size contains the required dimensions to display the entire message contents. 
+ *  Note, this is *not* the entire cell, but only its message bubble.
  *
  *  @param indexPath The index path of the item to be displayed.
  *
  *  @return The size of the message bubble for the item displayed at indexPath.
  */
 - (CGSize)messageBubbleSizeForItemAtIndexPath:(NSIndexPath *)indexPath;
+
+/**
+ *  Computes and returns the size of the item specified by indexPath.
+ *
+ *  @param indexPath The index path of the item to be displayed.
+ *
+ *  @return The size of the item displayed at indexPath.
+ */
+- (CGSize)sizeForItemAtIndexPath:(NSIndexPath *)indexPath;
 
 @end
