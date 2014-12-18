@@ -461,7 +461,10 @@ static void * kJSQMessagesKeyValueObservingContext = &kJSQMessagesKeyValueObserv
     cell.delegate = collectionView;
     
     if (!isMediaMessage) {
-        cell.textView.text = [messageItem text];
+      //  cell.textView.text = [messageItem text];
+        cell.textView.attributedText = [[NSAttributedString alloc] initWithString:messageText
+                                                                       attributes:@{ NSFontAttributeName : self.collectionView.collectionViewLayout.messageBubbleFont}];
+
        // NSParameterAssert(cell.textView.text != nil);
         
         id<JSQMessageBubbleImageDataSource> bubbleImageDataSource = [collectionView.dataSource collectionView:collectionView messageBubbleImageDataForItemAtIndexPath:indexPath];
