@@ -112,6 +112,9 @@
     self.cellBottomLabel.font = [UIFont systemFontOfSize:11.0f];
     self.cellBottomLabel.textColor = [UIColor lightGrayColor];
     
+    self.timeStampLabel.font = [UIFont fontWithName:kFontMedium size:10.0f];
+    self.timeStampLabel.textColor = [UIColor grayColor];
+    
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jsq_handleTapGesture:)];
     [self addGestureRecognizer:tap];
     self.tapGestureRecognizer = tap;
@@ -276,7 +279,7 @@
     //  thus, remove any additional subviews hidden behind the new media view
     dispatch_async(dispatch_get_main_queue(), ^{
         for (NSUInteger i = 0; i < self.messageBubbleContainerView.subviews.count; i++) {
-            if (self.messageBubbleContainerView.subviews[i] != _mediaView) {
+            if (self.messageBubbleContainerView.subviews[i] != _mediaView ) {
                 [self.messageBubbleContainerView.subviews[i] removeFromSuperview];
             }
         }
@@ -285,8 +288,8 @@
     
     self.activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [self.activity setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self.activity setColor:[UIColor colorWithRed:2/255.0f green:112/255.0f blue:186/255.0f alpha:1.0]];
-    
+    [self.activity setColor:[UIColor backgroundColor]];
+
     
     [self.mediaView addSubview:self.activity];
     [self.mediaView bringSubviewToFront:self.activity];
@@ -298,6 +301,8 @@
     
     
     [self.activity setCenter:[self.activity.superview center]];
+    [self.messageBubbleContainerView bringSubviewToFront:self.mediaView];
+
     
 }
 

@@ -229,7 +229,7 @@ static void * kJSQMessagesKeyValueObservingContext = &kJSQMessagesKeyValueObserv
     
     if (self.automaticallyScrollsToMostRecentMessage) {
         dispatch_async(dispatch_get_main_queue(), ^{
-          //  [self scrollToBottomAnimated:NO];
+            //   [self scrollToBottomAnimated:NO];
             [self.collectionView.collectionViewLayout invalidateLayoutWithContext:[JSQMessagesCollectionViewFlowLayoutInvalidationContext context]];
         });
     }
@@ -461,9 +461,14 @@ static void * kJSQMessagesKeyValueObservingContext = &kJSQMessagesKeyValueObserv
     cell.delegate = collectionView;
     
     if (!isMediaMessage) {
-      //  cell.textView.text = [messageItem text];
-        cell.textView.attributedText = [[NSAttributedString alloc] initWithString:messageText
-                                                                       attributes:@{ NSFontAttributeName : self.collectionView.collectionViewLayout.messageBubbleFont}];
+        if (messageText) {
+            cell.textView.attributedText = [[NSAttributedString alloc] initWithString:messageText
+                                                                           attributes:@{ NSFontAttributeName : self.collectionView.collectionViewLayout.messageBubbleFont}];
+        }
+        else
+        {
+            cell.textView.text = [messageItem text];
+        }
 
        // NSParameterAssert(cell.textView.text != nil);
         
@@ -508,7 +513,8 @@ static void * kJSQMessagesKeyValueObservingContext = &kJSQMessagesKeyValueObserv
     cell.cellTopLabel.attributedText = [collectionView.dataSource collectionView:collectionView attributedTextForCellTopLabelAtIndexPath:indexPath];
     cell.messageBubbleTopLabel.attributedText = [collectionView.dataSource collectionView:collectionView attributedTextForMessageBubbleTopLabelAtIndexPath:indexPath];
     cell.cellBottomLabel.attributedText = [collectionView.dataSource collectionView:collectionView attributedTextForCellBottomLabelAtIndexPath:indexPath];
-    
+    cell.timeStampLabel.attributedText = [Utilities getTimestamp:[messageItem date] fontSize:10.0f];
+
 
     cell.backgroundColor = [UIColor clearColor];
     

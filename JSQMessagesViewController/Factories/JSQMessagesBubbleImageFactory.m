@@ -99,7 +99,7 @@
     UIImage *bubble;
     if(flippedForIncoming)
     {
-        bubble = [JSQMessagesBubbleImageFactory jsq_horizontallyFlippedImageFromImage:[UIImage imageNamed:@"rounded_cube_in"]];
+        bubble = [self jsq_horizontallyFlippedImageFromImage:[UIImage imageNamed:@"rounded_cube_in"]];
     }
     else
     {
@@ -118,11 +118,11 @@
     }*/
 
     // make image stretchable from center point
-    //CGPoint center = CGPointMake(bubble.size.width / 2.0f, bubble.size.height / 2.0f);
-    //UIEdgeInsets capInsets = UIEdgeInsetsMake(center.y, center.x, center.y, center.x);
+    CGPoint center = CGPointMake(bubble.size.width / 2.0f, bubble.size.height / 2.0f);
+    UIEdgeInsets capInsets = UIEdgeInsetsMake(center.y, center.x, center.y, center.x);
     
-    normalBubble = [JSQMessagesBubbleImageFactory jsq_stretchableImageFromImage:normalBubble withCapInsets:self.capInsets];
-    highlightedBubble = [JSQMessagesBubbleImageFactory jsq_stretchableImageFromImage:highlightedBubble withCapInsets:self.capInsets];
+    normalBubble = [self jsq_stretchableImageFromImage:normalBubble withCapInsets:capInsets];
+    highlightedBubble = [self jsq_stretchableImageFromImage:highlightedBubble withCapInsets:capInsets];
     
     return [[JSQMessagesBubbleImage alloc] initWithMessageBubbleImage:normalBubble highlightedImage:highlightedBubble];
     

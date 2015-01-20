@@ -132,6 +132,9 @@
 
 @property (weak, nonatomic) IBOutlet UIImageView *gridIconImageView;
 
+@property (weak, nonatomic) IBOutlet UILabel *timeStampLabel;
+
+
 
 /**
  *  Returns the avatar container view of the cell. This view is the superview of 

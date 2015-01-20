@@ -32,6 +32,8 @@
 #import "JSQMessagesCollectionViewFlowLayoutInvalidationContext.h"
 
 #import "UIImage+JSQMessages.h"
+#import "User+Extentions.h"
+
 
 
 const CGFloat kJSQMessagesCollectionViewCellLabelHeightDefault = 20.0f;
@@ -104,7 +106,7 @@ const CGFloat kJSQMessagesCollectionViewAvatarSizeDefault = 30.0f;
     }
     
     _messageBubbleTextViewFrameInsets = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 6.0f);
-    _messageBubbleTextViewTextContainerInsets = UIEdgeInsetsMake(7.0f, 14.0f, 7.0f, 14.0f);
+    _messageBubbleTextViewTextContainerInsets = UIEdgeInsetsMake(7.0f, 12.0f, 7.0f, 14.0f);
     
     CGSize defaultAvatarSize = CGSizeMake(kJSQMessagesCollectionViewAvatarSizeDefault, kJSQMessagesCollectionViewAvatarSizeDefault);
     _incomingAvatarViewSize = defaultAvatarSize;
@@ -294,6 +296,10 @@ const CGFloat kJSQMessagesCollectionViewAvatarSizeDefault = 30.0f;
         [self jsq_resetDynamicAnimator];
     }
     
+    if (context.emptyCache) {
+        [self jsq_resetLayout];
+    }
+    
     [super invalidateLayoutWithContext:context];
 }
 
@@ -442,9 +448,10 @@ const CGFloat kJSQMessagesCollectionViewAvatarSizeDefault = 30.0f;
 
 - (CGSize)messageBubbleSizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    //NSValue *cachedSize = [self.messageBubbleCache objectForKey:@(messageItem.hash)];
+    id<JSQMessageData> messageItem = [self.collectionView.dataSource collectionView:self.collectionView messageDataForItemAtIndexPath:indexPath];
     
-    NSValue *cachedSize = [self.messageBubbleSizes objectForKey:indexPath];
+    NSValue *cachedSize = [self.messageBubbleCache objectForKey:@(messageItem.hash)];
+
     if (cachedSize)
     {
         if (self.savedIndexPathRow != indexPath.row) {
@@ -454,14 +461,12 @@ const CGFloat kJSQMessagesCollectionViewAvatarSizeDefault = 30.0f;
     
     self.savedIndexPathRow = indexPath.row;
     
-    id<JSQMessageData> messageItem = [self.collectionView.dataSource collectionView:self.collectionView messageDataForItemAtIndexPath:indexPath];
     CGSize finalSize = CGSizeZero;
     
     //if ([messageItem respondsToSelector:@selector(media)]) {
     if([messageItem messageType] == MessageTypeImage || [messageItem messageType] == MessageTypeLocation) {
         //finalSize = [[messageItem media] mediaViewDisplaySize];
         finalSize = [messageItem mediaViewDisplaySize];
-        //NSLog(@"media final Size w:%f h:%f",finalSize.width,finalSize.height);
     }
     else {
         CGSize avatarSize = [self jsq_avatarSizeForIndexPath:indexPath];
@@ -489,16 +494,19 @@ const CGFloat kJSQMessagesCollectionViewAvatarSizeDefault = 30.0f;
         CGFloat verticalInsets = verticalContainerInsets + verticalFrameInsets + 2.0f;
         
 
-        CGFloat finalWidth = MAX(stringSize.width + horizontalInsetsTotal, [UIImage imageNamed:@"bubble_min"].size.width);
-
+        CGSize sizeOfTimeStamp = [self timeStampSizeForItemAtIndexPath:indexPath];
         
-        finalSize = CGSizeMake(finalWidth, stringSize.height + verticalInsets);
+        
+        CGFloat finalWidth = MAX(stringSize.width + horizontalInsetsTotal, [UIImage imageNamed:@"bubble_min"].size.width);
+        
+        finalSize = CGSizeMake(MAX(finalWidth, sizeOfTimeStamp.width), stringSize.height + verticalInsets);
+        
+        finalSize = CGSizeMake(finalSize.width, finalSize.height + 14);
     }
-    [self.messageBubbleSizes setObject:[NSValue valueWithCGSize:finalSize] forKey:indexPath];
-    
     [self.messageBubbleCache setObject:[NSValue valueWithCGSize:finalSize] forKey:@(messageItem.hash)];
     
-    return finalSize;}
+    return finalSize;
+}
 
 - (CGSize)sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -512,6 +520,67 @@ const CGFloat kJSQMessagesCollectionViewAvatarSizeDefault = 30.0f;
     
     return CGSizeMake(self.itemWidth, ceilf(finalHeight));
 }
+
+
+- (CGSize)timeStampSizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    id<JSQMessageData> messageItem = [self.collectionView.dataSource collectionView:self.collectionView messageDataForItemAtIndexPath:indexPath];
+    
+    NSAttributedString *attrString = [Utilities getTimestamp:messageItem.date fontSize:10.0f];
+    
+    CGRect stringRect = [[attrString string] boundingRectWithSize:CGSizeMake(180, 20)
+                                                          options:(NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesLineFragmentOrigin)
+                                                       attributes:@{ NSFontAttributeName : [UIFont fontWithName:kFont size:18.0f] }
+                                                          context:nil];
+    
+    CGSize stringSize = CGRectIntegral(stringRect).size;
+    NSLog(@"%f",stringSize.width);
+    if (stringSize.width > 75)
+    {
+        if ([[messageItem senderId] isEqualToString:[User appUser].memberUUID])
+        {
+            
+            if (stringSize.width >= 160) {
+                stringSize.width -= 46;
+            }
+            else if (stringSize.width >= 138) {
+                stringSize.width -= 35;
+            }
+            else if (stringSize.width >= 115) {
+                stringSize.width -= 32;
+            }
+            else
+            {
+                stringSize.width -= 18;
+            }
+        }
+        else
+        {
+            if (stringSize.width >= 160) {
+                stringSize.width -= 36;
+            }
+            else if (stringSize.width >= 138) {
+                stringSize.width -= 28;
+            }
+            else if (stringSize.width >= 115) {
+                stringSize.width -= 24;
+            }
+            else
+            {
+                stringSize.width -= 14;
+            }
+        }
+    }
+    else
+    {
+        if ([[messageItem senderId] isEqualToString:[User appUser].memberUUID]) {
+            stringSize.width -= 6;
+        }
+    }
+    return stringSize;
+    
+}
+
 
 - (void)jsq_configureMessageCellLayoutAttributes:(JSQMessagesCollectionViewLayoutAttributes *)layoutAttributes
 {
